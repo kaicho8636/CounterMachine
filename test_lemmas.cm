@@ -1,0 +1,26 @@
+.include lemmas.cm
+
+# lemmas.cmの定義のテスト
+    clear R0
+    move R1 R2 R3
+    copy R4 R5
+    nop
+    print R0
+    print R1
+    print R2
+    print R3
+    print R4
+    print R5
+    halt
+R0:
+    16
+R1:
+    32
+R2:
+    0
+R3:
+    0
+R4:
+    64
+R5:
+    0

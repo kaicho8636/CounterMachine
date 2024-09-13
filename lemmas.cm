@@ -1,0 +1,48 @@
+# カウンターをnにする
+.def goto n
+    inc R0
+    jnzdec R0 n
+R0:
+    0
+.end
+
+
+# Riを0にする
+.def clear Ri
+L:
+    jnzdec Ri L
+.end
+
+
+# RiをRj1, Rj2に移してRiは0にする
+.def move Ri Rj1 Rj2
+L0:
+    jnzdec Ri L1
+    goto L2
+L1:
+    inc Rj1
+    inc Rj2
+    goto L0
+L2:
+.end
+
+
+# Rj=0のとき、RiをRjにコピーする
+.def copy Ri Rj
+    move Ri Rj Ru
+    move Ru Ri Rv
+    goto L
+Ru:
+    0
+Rv:
+    0
+L:
+.end
+
+
+# 何もせず、カウンターだけ増加させる
+.def nop
+    inc R0
+    jnzdec R0 L
+L:
+.end
