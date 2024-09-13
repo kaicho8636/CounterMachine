@@ -25,13 +25,11 @@ class Assembler:
         self.process_macro()
         self.process_label()
         if preprocess_only:
-            print("Preprocessed Code:")
             for i, line in enumerate(self.lines):
                 print(f"{i}: {line}")
             return []
         executable = self.generate_executable()
         if assemble_only:
-            print("Generated Machine Code:")
             print(executable)
             return []
         return executable
