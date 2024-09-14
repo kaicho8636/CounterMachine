@@ -1,5 +1,5 @@
 .def move Ri Rj
-    # riをrjに転送する
+    # rjをriに転送する
 .end
 
 
@@ -26,6 +26,10 @@
 
 .def jump L
     # プログラムカウンタの値をLにする
+    inc R
+    jnzdec R L
+R:
+    0
 .end
 
 
