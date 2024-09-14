@@ -112,18 +112,18 @@ class Assembler:
     def process_label(self):
         # ラベルをアドレスに展開して、ラベル定義を削除
         lines_len = len(self.lines)
-        adress = 0
+        address = 0
         for i, line in enumerate(self.lines[:]):
             if line[-1] == ":":
                 name = line[:-1]
                 del self.lines[i-lines_len]
-                self.expand_label(name, adress)
+                self.expand_label(name, address)
             else:
-                adress += 1
+                address += 1
     
-    def expand_label(self, name, adress):
+    def expand_label(self, name, address):
         # ラベル名をアドレスに置換
-        self.lines = [re.sub(rf"(?<!\w){name}(?!\w)", str(adress), line) for line in self.lines]
+        self.lines = [re.sub(rf"(?<!\w){name}(?!\w)", str(address), line) for line in self.lines]
     
     def generate_executable(self):
         # 機械語を生成する
@@ -192,7 +192,7 @@ class CounterMachine:
     
     def print(self, index):
         # indexのアドレスの内容を表示
-        print(f"Info: The value at adress {index} is {self.memory[index]}")
+        print(f"Info: The value at address s {index} is {self.memory[index]}")
         self.counter += 1
 
 
