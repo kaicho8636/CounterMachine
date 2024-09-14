@@ -1,0 +1,39 @@
+.def move Ri Rj
+    # riをrjに転送する
+.end
+
+
+.def add Ri Rj
+    # riにrjを足して結果をriに格納する
+.end
+
+
+.def sub Ri Rj
+    # riからrjを引いて結果をriに格納する
+    # riは負にはならない
+.end
+
+
+.def mul Ri Rj
+    # riにrjを掛けて結果をriに格納する
+.end
+
+
+.def div Ri Rj Rk
+    # riをrjで割って商をri, 余りをrkに格納する
+.end
+
+
+.def jump L
+    # プログラムカウンタの値をLにする
+.end
+
+
+.def jz R L
+    # rが0ならプログラムカウンタの値をLにする
+.end
+
+
+.def jnz R L
+    # rが0でなければプログラムカウンタの値をLにする
+.end
