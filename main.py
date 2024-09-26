@@ -17,13 +17,22 @@ class Assembler:
         self.lines = source.splitlines()
         self.memsize = memsize
         self.unique_counter = 0
+        self.labels = {}
     
     def assemble(self):
-        # アセンブリを機械語に翻訳
+        # 全処理
         self.process_include()
         self.strip_lines()
         self.process_macro()
+        if macro_expansion_only:
+            for line in self.lines:
+                print(line)
+            return []
         self.process_label()
+        if print_label_table:
+            for name, address in self.labels.items():
+                print(f"{name}: {address}")
+            return []
         if preprocess_only:
             for i, line in enumerate(self.lines):
                 print(f"{i}: {line}")
@@ -94,18 +103,19 @@ class Assembler:
             words = line.split()
             if words[0] == name:
                 expanded_content = content
-                # マクロの引数を実引数に置換
-                actual_params = words[1:]
-                for arg, param in zip(args, actual_params):
-                    expanded_content = re.sub(rf"(?<!\w){arg}(?!\w)", param, expanded_content)
-                # マクロ内のラベル名にカウンターの値を追加してユニーク化
+                # マクロ内のラベル名にマクロ名とカウンターの値を追加してユニーク化
                 for expanded_line in expanded_content.splitlines():
                     if expanded_line[-1] == ":":
                         label_name = expanded_line[:-1]
-                        unique_label_name = f"{label_name}_{self.unique_counter}"
+                        unique_label_name = f"{label_name}_{name}{self.unique_counter}"
                         expanded_content = expanded_content.replace(expanded_line, unique_label_name+":")
-                        expanded_content = re.sub(rf"(?<!\w){label_name}(?!\w)", unique_label_name, expanded_content)
+                        expanded_content = re.sub(rf"(?<!\w|_){label_name}(?!\w|_)", unique_label_name, expanded_content)
                 self.unique_counter += 1
+                # マクロの引数を実引数に置換
+                actual_params = words[1:]
+                for j, arg in enumerate(args):
+                    expanded_content = re.sub(rf"(?<!\w|_){arg}(?!\w|_)", "{"+str(j)+"}", expanded_content)
+                expanded_content = expanded_content.format(*actual_params)
                 # マクロの呼び出し行を置換
                 self.lines[i-lines_len:i+1-lines_len] = expanded_content.splitlines()
     
@@ -117,6 +127,7 @@ class Assembler:
             if line[-1] == ":":
                 name = line[:-1]
                 del self.lines[i-lines_len]
+                self.labels[name] = address
                 self.expand_label(name, address)
             else:
                 address += 1
@@ -192,7 +203,7 @@ class CounterMachine:
     
     def print(self, index):
         # indexのアドレスの内容を表示
-        print(f"Info: The value at address s {index} is {self.memory[index]}")
+        print(f"Info: The value at address {index} is {self.memory[index]}")
         self.counter += 1
 
 
@@ -200,17 +211,23 @@ def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("filename")
-    parser.add_argument("-m", "--memsize", type=int, default=256, help="カウントマシンのメモリサイズを指定できます")
-    parser.add_argument("-s", "--print_state", action="store_true", help="実行時に現在のカウンタと命令の値を表示します")
-    parser.add_argument("-p", "--preprocess_only", action="store_true", help="マクロとラベルを展開したコードを表示します")
-    parser.add_argument("-a", "--assemble_only", action="store_true", help="機械語を生成して表示します")
+    parser.add_argument("--memsize", type=int, default=1024, help="カウントマシンのメモリサイズを指定できます")
+    parser.add_argument("-s", "--state", action="store_true", help="実行時に現在のカウンタと命令の値を表示します")
+    parser.add_argument("-m", "--macro", action="store_true", help="マクロ展開の結果を表示します")
+    parser.add_argument("-l", "--label", action="store_true", help="ラベル名と対応するアドレスの一覧を表示します")
+    parser.add_argument("-p", "--preprocess", action="store_true", help="ラベルをアドレスに展開した結果のコードを表示します")
+    parser.add_argument("-a", "--assemble", action="store_true", help="機械語を生成して表示します")
     args = parser.parse_args()
     global print_state
+    global macro_expansion_only
+    global print_label_table
     global preprocess_only
     global assemble_only
-    print_state = args.print_state
-    preprocess_only = args.preprocess_only
-    assemble_only = args.assemble_only
+    print_state = args.state
+    macro_expansion_only = args.macro
+    print_label_table = args.label
+    preprocess_only = args.preprocess
+    assemble_only = args.assemble
     with open(args.filename) as f:
         source = f.read()
         program = Assembler(source, args.memsize).assemble()

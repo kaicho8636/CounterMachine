@@ -1,43 +1,117 @@
-.def move Ri Rj
-    # rjをriに転送する
+.include lemmas.cm
+
+.def move a b
+    # a = b
+    clear a
+    copy b a
 .end
 
 
-.def add Ri Rj
-    # riにrjを足して結果をriに格納する
+.def add a b
+    # a = a + b
+    move counter b
+L0:
+    jnzdec counter L1
+    goto L2
+L1:
+    inc a
+    goto L0
+counter:
+    0
+L2:
 .end
 
 
-.def sub Ri Rj
-    # riからrjを引いて結果をriに格納する
-    # riは負にはならない
+.def sub a b
+    # a = a - b (if a > b)
+    # a = 0     (if a ≤ b)
+    move t b
+L0:
+    jnzdec t L1
+    goto L2
+L1:
+    jnzdec a L0
+    goto L2
+t:
+    0
+L2:
 .end
 
 
-.def mul Ri Rj
-    # riにrjを掛けて結果をriに格納する
+.def mul a b
+    # a = a * b
+    move counter b
+    clear result
+L0:
+    jnzdec counter L1
+    goto L2
+L1:
+    add result a
+    goto L0
+L2:
+    move a result
+    goto L3
+counter:
+    0
+result:
+    0
+L3:
 .end
 
 
-.def div Ri Rj Rk
-    # riをrjで割って商をri, 余りをrkに格納する
+.def div a b c
+    # a = a / b
+    # c = a % b
+    inc a
+    clear quotient
+    move remainder a
+    move c a
+L0:
+    sub remainder b
+    jnzdec remainder L1
+    goto L2
+L1:
+    inc remainder
+    inc quotient
+    goto L0
+L2:
+    move a quotient
+    move t b
+    mul t quotient
+    sub c t
+    jnzdec c L3
+    halt
+quotient:
+    0
+remainder:
+    0
+t:
+    0
+L3:
 .end
 
 
 .def jump L
-    # プログラムカウンタの値をLにする
-    inc R
-    jnzdec R L
-R:
-    0
+    # program counter = L
+    goto L
 .end
 
 
-.def jz R L
-    # rが0ならプログラムカウンタの値をLにする
+.def jz a L
+    # program counter = L (if a = 0)
+    jnzdec a L0
+    goto L
+L0:
+    inc a
 .end
 
 
-.def jnz R L
-    # rが0でなければプログラムカウンタの値をLにする
+.def jnz a L
+    # program counter = L (if a ≠ 0)
+    jnzdec a L0
+    goto L1
+L0:
+    inc a
+    goto L
+L1:
 .end

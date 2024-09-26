@@ -2,7 +2,7 @@
 
 # lemmas.cmの定義のテスト
     clear R0
-    move R1 R2 R3
+    mov R1 R2 R3
     copy R4 R5
     nop
     print R0
