@@ -1,0 +1,11 @@
+.include basic.cm
+
+.def decode memsize instruction opcode operand jump_addr
+    goto start
+    .var opnum 4
+start:
+    move operand instruction
+    div operand opnum opcode
+    move jump_addr operand
+    div jump_addr memsize operand
+.end
