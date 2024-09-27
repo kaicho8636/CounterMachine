@@ -25,11 +25,14 @@ class Assembler:
         # 全処理
         self.process_include()
         self.strip_lines()
+        self.expand_print()
+
         self.process_macro()
         if macro_expansion_only:
             for line in self.lines:
                 print(line)
             return []
+        
         self.process_label()
         if print_label_table:
             for name, address in self.labels.items():
@@ -39,6 +42,7 @@ class Assembler:
             for i, line in enumerate(self.lines):
                 print(f"{i}: {line}")
             return []
+        
         executable = self.generate_executable()
         if assemble_only:
             print(executable)
@@ -55,6 +59,14 @@ class Assembler:
             if cleaned_line:
                 result.append(cleaned_line)
         self.lines = result
+    
+    def expand_print(self):
+        # 複数引数のprint命令を展開
+        for i, line in enumerate(self.lines):
+            words = line.split()
+            if words[0] == "print" and len(words) > 2:
+                self.lines[i] = "\n".join(f"print {var}" for var in words[1:])
+        self.lines = [line for lines_block in self.lines for line in lines_block.splitlines()]
     
     def process_include(self):
         # includeされているファイルを読み込み、include行をファイルの内容で置換
@@ -152,12 +164,15 @@ class Assembler:
                 for word in words:
                     result.append(int(word))
             elif words[0] in ["halt"]:
+                # オペランドなし
                 result.append(instruction_table[words[0]])
             elif words[0] in ["inc", "print"]:
+                # 1オペランド
                 opcode = instruction_table[words[0]]
                 index = int(words[1])
                 result.append(opcode + index * len(instruction_table))
             elif words[0] in ["jnzdec"]:
+                # 2オペランド
                 opcode = instruction_table[words[0]]
                 index = int(words[1])
                 counter = int(words[2])
