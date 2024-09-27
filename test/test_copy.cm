@@ -1,0 +1,9 @@
+.include lemmas.cm
+
+copy src dst
+print src
+print dst
+halt
+
+.var src 10
+.var dst 0

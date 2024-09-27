@@ -28,14 +28,22 @@ L2:
 
 # Rj=0のとき、RiをRjにコピーする
 .def copy Ri Rj
-    mov Ri Rj Ru
-    mov Ru Ri Rv
-    goto L
-Ru:
-    0
-Rv:
-    0
-L:
+    goto start
+    .var t 0
+start:
+    jnzdec Ri inc_Rj_t
+    goto restore_Ri
+inc_Rj_t:
+    inc Rj
+    inc t
+    goto start
+restore_Ri:
+    jnzdec t inc_Ri
+    goto end
+inc_Ri:
+    inc Ri
+    goto restore_Ri
+end:
 .end
 
 
