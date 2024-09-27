@@ -1,5 +1,6 @@
 .include basic.cm
 
+
 .def decode memsize instruction opcode operand jump_addr
     goto start
     .var opnum 4
@@ -9,6 +10,7 @@ start:
     move jump_addr operand
     div jump_addr memsize operand
 .end
+
 
 .def encode memsize instruction opcode operand jump_addr
     goto start
@@ -20,3 +22,40 @@ start:
     mul instruction opnum
     add instruction opcode
 .end
+
+
+.def add_address memsize instruction offset
+    goto start
+    .var opcode 0
+    .var operand 0
+    .var jump_addr 0
+    .var opcode_copy 0
+start:
+    decode memsize instruction opcode operand jump_addr
+    move opcode_copy opcode
+    jnzdec opcode_copy gt_zero
+    # inc
+    goto add_operand
+gt_zero:
+    jnzdec opcode_copy gt_one
+    # jnzdec
+    goto add_operand_and_jump_addr
+gt_one:
+    jnzdec opcode_copy gt_two
+    # print
+    goto add_operand
+gt_two:
+    # halt (or data)
+    goto end
+add_operand:
+    add operand offset
+    goto encoding
+add_operand_and_jump_addr:
+    add operand offset
+    add jump_addr offset
+    goto encoding
+encoding:
+    encode memsize instruction opcode operand jump_addr
+end:
+.end
+

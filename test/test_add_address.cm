@@ -1,0 +1,9 @@
+.include machine_code.cm
+
+add_address memsize instruction offset
+print instruction
+halt
+
+.var memsize 1024
+.var instruction 217237
+.var offset 10

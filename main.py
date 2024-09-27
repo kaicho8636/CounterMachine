@@ -74,7 +74,7 @@ class Assembler:
             if words[0] == ".var":
                 name = words[1]
                 value = words[2]
-                self.lines[i] = f"{name}:\n\t{value}"
+                self.lines[i] = f"{name}:\n{value}"
         self.lines = [line for lines_block in self.lines for line in lines_block.splitlines()]
     
     def process_include(self):
@@ -239,7 +239,7 @@ class CounterMachine:
 def main():
     parser = ArgumentParser()
     parser.add_argument("filename")
-    parser.add_argument("--memsize", type=int, default=1024, help="カウントマシンのメモリサイズを指定できます")
+    parser.add_argument("--memsize", type=int, default=2048, help="カウントマシンのメモリサイズを指定できます")
     parser.add_argument("-s", "--state", action="store_true", help="実行時に現在のカウンタと命令の値を表示します")
     parser.add_argument("-m", "--macro", action="store_true", help="マクロ展開の結果を表示します")
     parser.add_argument("-l", "--label", action="store_true", help="ラベル名と対応するアドレスの一覧を表示します")

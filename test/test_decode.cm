@@ -5,7 +5,7 @@ print opcode operand jump_addr
 halt
 
 .var memsize 1024
-.var instruction 217237
+.var instruction 258237
 .var opcode 0
 .var operand 0
 .var jump_addr 0
