@@ -61,7 +61,10 @@ class Assembler:
             if line.startswith(".include"):
                 filename = line.split()[1]
                 with open(filename) as f:
-                    self.lines[i-lines_len:i+1-lines_len] = f.readlines()
+                    included_content = f.read()
+                    sub_asm = Assembler(included_content, 0)
+                    sub_asm.process_include()
+                    self.lines[i-lines_len:i+1-lines_len] = sub_asm.lines
     
     def process_macro(self):
         # マクロの展開と定義の削除を行う
