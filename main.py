@@ -1,3 +1,5 @@
+from argparse import ArgumentParser
+from pathlib import Path
 import re
 
 
@@ -60,7 +62,8 @@ class Assembler:
         for i, line in enumerate(self.lines[:]):
             if line.startswith(".include"):
                 filename = line.split()[1]
-                with open(filename) as f:
+                filepath = Path(filename).resolve()
+                with open(filepath) as f:
                     included_content = f.read()
                     sub_asm = Assembler(included_content, 0)
                     sub_asm.process_include()
@@ -211,8 +214,7 @@ class CounterMachine:
 
 
 def main():
-    import argparse
-    parser = argparse.ArgumentParser()
+    parser = ArgumentParser()
     parser.add_argument("filename")
     parser.add_argument("--memsize", type=int, default=1024, help="カウントマシンのメモリサイズを指定できます")
     parser.add_argument("-s", "--state", action="store_true", help="実行時に現在のカウンタと命令の値を表示します")
