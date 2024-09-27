@@ -1,0 +1,11 @@
+.include machine_code.cm
+
+encode memsize instruction opcode operand jump_addr
+print instruction
+halt
+
+.var memsize 1024
+.var instruction 0
+.var opcode 1
+.var operand 37
+.var jump_addr 53

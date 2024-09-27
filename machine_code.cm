@@ -9,3 +9,14 @@ start:
     move jump_addr operand
     div jump_addr memsize operand
 .end
+
+.def encode memsize instruction opcode operand jump_addr
+    goto start
+    .var opnum 4
+start:
+    move instruction jump_addr
+    mul instruction memsize
+    add instruction operand
+    mul instruction opnum
+    add instruction opcode
+.end
