@@ -178,14 +178,14 @@ class Assembler:
             elif words[0] in ["inc", "print"]:
                 # 1オペランド
                 opcode = instruction_table[words[0]]
-                index = int(words[1])
-                result.append(opcode + index * len(instruction_table))
+                operand = int(words[1])
+                result.append(opcode + operand * len(instruction_table))
             elif words[0] in ["jnzdec"]:
                 # 2オペランド
                 opcode = instruction_table[words[0]]
-                index = int(words[1])
-                counter = int(words[2])
-                result.append(opcode + (index + counter * self.memsize) * len(instruction_table))
+                operand = int(words[1])
+                jump_addr = int(words[2])
+                result.append(opcode + (operand + jump_addr * self.memsize) * len(instruction_table))
         return result
 
 
@@ -205,13 +205,12 @@ class CounterMachine:
                 print(f"Machine State: Counter: {self.counter}, Instruction: {instruction}")
             # 命令をデコード
             opcode = instruction % len(instruction_table)
-            operand = instruction // len(instruction_table)
+            operand = (instruction // len(instruction_table)) % self.memsize
+            jump_addr = (instruction // len(instruction_table)) // self.memsize
             if opcode == 0:
                 self.inc(operand)
             elif opcode == 1:
-                index = operand % self.memsize
-                counter = operand // self.memsize
-                self.jnzdec(index, counter)
+                self.jnzdec(operand, jump_addr)
             elif opcode == 2:
                 self.print(operand)
             else:
