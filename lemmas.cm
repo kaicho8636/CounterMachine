@@ -2,8 +2,7 @@
 .def goto n
     inc R
     jnzdec R n
-R:
-    0
+.var R 0
 .end
 
 

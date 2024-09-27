@@ -26,6 +26,7 @@ class Assembler:
         self.process_include()
         self.strip_lines()
         self.expand_print()
+        self.process_variable()
 
         self.process_macro()
         if macro_expansion_only:
@@ -65,7 +66,18 @@ class Assembler:
         for i, line in enumerate(self.lines):
             words = line.split()
             if words[0] == "print" and len(words) > 2:
-                self.lines[i] = "\n".join(f"print {var}" for var in words[1:])
+                args = words[1:]
+                self.lines[i] = "\n".join(f"print {arg}" for arg in args)
+        self.lines = [line for lines_block in self.lines for line in lines_block.splitlines()]
+    
+    def process_variable(self):
+        # 変数宣言を処理
+        for i, line in enumerate(self.lines):
+            words = line.split()
+            if words[0] == ".var":
+                name = words[1]
+                value = words[2]
+                self.lines[i] = f"{name}:\n\t{value}"
         self.lines = [line for lines_block in self.lines for line in lines_block.splitlines()]
     
     def process_include(self):

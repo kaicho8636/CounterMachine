@@ -16,8 +16,7 @@ L0:
 L1:
     inc a
     goto L0
-counter:
-    0
+.var counter 0
 L2:
 .end
 
@@ -32,8 +31,7 @@ L0:
 L1:
     jnzdec a L0
     goto L2
-t:
-    0
+.var t 0
 L2:
 .end
 
@@ -51,10 +49,8 @@ L1:
 L2:
     move a result
     goto L3
-counter:
-    0
-result:
-    0
+.var counter 0
+.var result 0
 L3:
 .end
 
@@ -81,12 +77,9 @@ L2:
     sub c t
     jnzdec c L3
     halt
-quotient:
-    0
-remainder:
-    0
-t:
-    0
+.var quotient 0
+.var remainder 0
+.var t 0
 L3:
 .end
 
