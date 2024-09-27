@@ -3,9 +3,6 @@ from pathlib import Path
 import re
 
 
-preprocess_only = False
-assemble_only = False
-print_state = False
 instruction_table = {
     "inc": 0,
     "jnzdec": 1,
