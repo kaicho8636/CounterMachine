@@ -1,0 +1,7 @@
+.include basic.cm
+.include lemmas.cm
+
+# RiからRjまでアドレスの中身をRkから始まるアドレス空間にコピーする
+.def copy_memory Ri Rj Rk Rl
+    copy Ri R
+

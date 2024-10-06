@@ -1,0 +1,9 @@
+.include lemmas.cm
+    copy B A
+    print A
+    print B
+    halt
+A:
+    0
+B:
+    10
